@@ -1,9 +1,9 @@
 {
-  "name": "@rogerfelipe/serverless-offline-sqs",
+  "name": "serverless-offline-squeue",
   "version": "7.0.7",
   "private": false,
   "description": "Emulate AWS λ and SQS locally when developing your Serverless project",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "type": "module",
   "scripts": {
     "build": "babel src -d dist/ --out-file-extension .cjs"
@@ -55,6 +55,7 @@
     "sqs",
     "elasticmq",
     "serverless",
+    "serverless-squeue", 
     "serverless-offline",
     "lambda"
   ]
