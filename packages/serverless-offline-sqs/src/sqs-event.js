@@ -1,4 +1,4 @@
-const { mapValues, mapKeys, lowerFirst } = require("lodash/fp");
+import { mapValues, mapKeys, lowerFirst } from "lodash";
 
 class SQSEvent {
   constructor(messages, region, arn) {

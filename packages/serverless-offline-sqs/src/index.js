@@ -10,7 +10,7 @@ import {
   pick,
   pipe,
   toPairs,
-} from "lodash/fp";
+} from "lodash";
 
 import Lambda from "serverless-offline/lambda";
 

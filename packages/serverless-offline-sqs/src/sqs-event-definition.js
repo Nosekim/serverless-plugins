@@ -1,4 +1,4 @@
-import { isNil, omit } from "lodash/fp";
+import { isNil, omit } from "lodash";
 
 const extractQueueNameFromARN = (arn) => {
   const [, , , , , queueName] = arn.split(":");

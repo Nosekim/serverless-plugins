@@ -9,7 +9,7 @@ import {
   mapValues,
   isPlainObject,
   toString,
-} from "lodash/fp";
+} from "lodash";
 import { default as PQueue } from "p-queue";
 import SQSEventDefinition from "./sqs-event-definition";
 import SQSEvent from "./sqs-event";
