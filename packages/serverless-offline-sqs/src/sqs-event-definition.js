@@ -1,7 +1,7 @@
-const { isNil, omit } = require('lodash/fp');
+import { isNil, omit } from "lodash/fp";
 
 const extractQueueNameFromARN = (arn) => {
-  const [, , , , , queueName] = arn.split(':');
+  const [, , , , , queueName] = arn.split(":");
   return queueName;
 };
 
@@ -10,11 +10,11 @@ class SQSEventDefinition {
     let enabled;
     let queueName;
 
-    if (typeof rawSqsEventDefinition === 'string') {
+    if (typeof rawSqsEventDefinition === "string") {
       queueName = extractQueueNameFromARN(rawSqsEventDefinition);
-    } else if (typeof rawSqsEventDefinition.arn === 'string') {
+    } else if (typeof rawSqsEventDefinition.arn === "string") {
       queueName = extractQueueNameFromARN(rawSqsEventDefinition.arn);
-    } else if (typeof rawSqsEventDefinition.queueName === 'string') {
+    } else if (typeof rawSqsEventDefinition.queueName === "string") {
       queueName = rawSqsEventDefinition.queueName;
     }
 
@@ -23,13 +23,14 @@ class SQSEventDefinition {
     this.arn = `arn:aws:sqs:${region}:${accountId}:${queueName}`;
     this.queueName = queueName;
 
-    if (typeof rawSqsEventDefinition !== 'string') {
+    if (typeof rawSqsEventDefinition !== "string") {
       Object.assign(
         this,
-        omit(['arn', 'queueName', 'enabled'], rawSqsEventDefinition)
+        omit(["arn", "queueName", "enabled"], rawSqsEventDefinition)
       );
     }
   }
 }
 
-module.exports = SQSEventDefinition;
+// module.exports = SQSEventDefinition;
+export default SQSEventDefinition;

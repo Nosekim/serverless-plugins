@@ -1,4 +1,4 @@
-const {
+import {
   compact,
   fromPairs,
   get,
@@ -10,23 +10,23 @@ const {
   pick,
   pipe,
   toPairs,
-} = require('lodash/fp');
+} from "lodash/fp";
 
-const Lambda = require('serverless-offline/src/lambda').default;
+import Lambda from "serverless-offline/lambda";
 
-const SQS = require('./sqs');
+import SQS from "./sqs";
 
-const OFFLINE_OPTION = 'serverless-offline';
-const CUSTOM_OPTION = 'serverless-offline-sqs';
+const OFFLINE_OPTION = "serverless-offline";
+const CUSTOM_OPTION = "serverless-offline-sqs";
 
 const SERVER_SHUTDOWN_TIMEOUT = 5000;
 
 const defaultOptions = {
   batchSize: 100,
-  startingPosition: 'TRIM_HORIZON',
+  startingPosition: "TRIM_HORIZON",
   autoCreate: false,
 
-  accountId: '000000000000',
+  accountId: "000000000000",
 };
 
 const omitUndefined = omitBy(isUndefined);
@@ -45,10 +45,10 @@ class ServerlessOfflineSQS {
     // setLog((...args) => serverless.cli.log(...args));
 
     this.hooks = {
-      'offline:start:init': this.start.bind(this),
-      'offline:start:ready': this.ready.bind(this),
-      'offline:start': this._startWithExplicitEnd.bind(this),
-      'offline:start:end': this.end.bind(this),
+      "offline:start:init": this.start.bind(this),
+      "offline:start:ready": this.ready.bind(this),
+      "offline:start": this._startWithExplicitEnd.bind(this),
+      "offline:start:end": this.end.bind(this),
     };
   }
 
@@ -75,7 +75,7 @@ class ServerlessOfflineSQS {
   }
 
   async ready() {
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV !== "test") {
       await this._listenForTermination();
     }
   }
@@ -84,8 +84,8 @@ class ServerlessOfflineSQS {
   async _listenForTermination() {
     const command = await new Promise((resolve) => {
       process
-        .on('SIGINT', () => resolve('SIGINT'))
-        .on('SIGTERM', () => resolve('SIGTERM'));
+        .on("SIGINT", () => resolve("SIGINT"))
+        .on("SIGTERM", () => resolve("SIGTERM"));
     });
 
     console.log(`Got ${command} signal. Offline Halting...`);
@@ -98,11 +98,11 @@ class ServerlessOfflineSQS {
   }
 
   async end(skipExit) {
-    if (process.env.NODE_ENV === 'test' && skipExit === undefined) {
+    if (process.env.NODE_ENV === "test" && skipExit === undefined) {
       return;
     }
 
-    console.log('Halting offline server');
+    console.log("Halting offline server");
 
     const eventModules = [];
 
@@ -149,7 +149,7 @@ class ServerlessOfflineSQS {
     this.options = {
       ...omitUndefined(defaultOptions),
       ...omitUndefined(provider),
-      ...omitUndefined(pick('location', offlineOptions)), // serverless-webpack support
+      ...omitUndefined(pick("location", offlineOptions)), // serverless-webpack support
       ...omitUndefined(customOptions),
       ...omitUndefined(this.cliOptions),
     };
@@ -193,7 +193,7 @@ class ServerlessOfflineSQS {
 
   _resolveFn(obj) {
     const Resources = get(
-      ['service', 'resources', 'Resources'],
+      ["service", "resources", "Resources"],
       this.serverless
     );
 
@@ -202,17 +202,17 @@ class ServerlessOfflineSQS {
       map(([key, value]) => {
         if (!isPlainObject(value)) return [key, value];
 
-        if (has('Fn::GetAtt', value)) {
-          const [resourceName, attribute] = value['Fn::GetAtt'];
+        if (has("Fn::GetAtt", value)) {
+          const [resourceName, attribute] = value["Fn::GetAtt"];
 
           switch (attribute) {
-            case 'Arn': {
-              const type = get([resourceName, 'Type'], Resources);
+            case "Arn": {
+              const type = get([resourceName, "Type"], Resources);
 
               switch (type) {
-                case 'AWS::SQS::Queue': {
+                case "AWS::SQS::Queue": {
                   const queueName = get(
-                    [resourceName, 'Properties', 'QueueName'],
+                    [resourceName, "Properties", "QueueName"],
                     Resources
                   );
                   return [
@@ -239,11 +239,12 @@ class ServerlessOfflineSQS {
 
   _getResources() {
     const Resources = get(
-      ['service', 'resources', 'Resources'],
+      ["service", "resources", "Resources"],
       this.serverless
     );
     return this._resolveFn(Resources);
   }
 }
 
-module.exports = ServerlessOfflineSQS;
+// module.exports = ServerlessOfflineSQS;
+export default ServerlessOfflineSQS;

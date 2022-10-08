@@ -1,6 +1,6 @@
-const SQSClient = require('aws-sdk/clients/sqs');
+import SQSClient from "aws-sdk/clients/sqs";
 // eslint-disable-next-line no-shadow
-const {
+import {
   pipe,
   get,
   values,
@@ -9,10 +9,10 @@ const {
   mapValues,
   isPlainObject,
   toString,
-} = require('lodash/fp');
-const { default: PQueue } = require('p-queue');
-const SQSEventDefinition = require('./sqs-event-definition');
-const SQSEvent = require('./sqs-event');
+} from "lodash/fp";
+import { default as PQueue } from "p-queue";
+import SQSEventDefinition from "./sqs-event-definition";
+import SQSEvent from "./sqs-event";
 
 const delay = (timeout) =>
   new Promise((resolve) => {
@@ -100,8 +100,8 @@ class SQS {
         .receiveMessage({
           QueueUrl,
           MaxNumberOfMessages: batchSize,
-          AttributeNames: ['All'],
-          MessageAttributeNames: ['All'],
+          AttributeNames: ["All"],
+          MessageAttributeNames: ["All"],
           WaitTimeSeconds: 5,
         })
         .promise();
@@ -140,7 +140,7 @@ class SQS {
     return pipe(
       values,
       find(matches({ Properties: { QueueName: queueName } })),
-      get('Properties')
+      get("Properties")
     )(this.resources);
   }
 
@@ -160,7 +160,7 @@ class SQS {
     } catch (err) {
       if (
         remainingTry > 0 &&
-        err.name === 'AWS.SimpleQueueService.NonExistentQueue'
+        err.name === "AWS.SimpleQueueService.NonExistentQueue"
       )
         return this._createQueue({ queueName }, remainingTry - 1);
       console.warn(err.stack);
@@ -168,4 +168,5 @@ class SQS {
   }
 }
 
-module.exports = SQS;
+//module.exports = SQS;
+export default SQS;

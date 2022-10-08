@@ -1,9 +1,10 @@
 {
   "name": "@rogerfelipe/serverless-offline-sqs",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "private": false,
   "description": "Emulate AWS λ and SQS locally when developing your Serverless project",
   "main": "src",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git@github.com:CoorpAcademy/serverless-plugins.git"

@@ -1,4 +1,4 @@
-const { mapValues, mapKeys, lowerFirst } = require('lodash/fp');
+const { mapValues, mapKeys, lowerFirst } = require("lodash/fp");
 
 class SQSEvent {
   constructor(messages, region, arn) {
@@ -17,7 +17,7 @@ class SQSEvent {
         attributes,
         messageAttributes: mapValues(mapKeys(lowerFirst), messageAttributes),
         md5OfBody,
-        eventSource: 'aws:sqs',
+        eventSource: "aws:sqs",
         eventSourceARN: arn,
         awsRegion: region,
       })
@@ -25,4 +25,5 @@ class SQSEvent {
   }
 }
 
-module.exports = SQSEvent;
+// module.exports = SQSEvent;
+export default SQSEvent;
