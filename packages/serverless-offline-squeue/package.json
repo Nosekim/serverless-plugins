@@ -1,0 +1,61 @@
+{
+  "name": "serverless-offline-squeue",
+  "version": "7.0.9",
+  "private": false,
+  "description": "Emulate AWS λ and SQS locally when developing your Serverless project",
+  "type": "module",
+  "scripts": {
+    "prepublish": "yarn build",
+    "build": "rm -fr dist/* && npx tsc -p tsconfig.json && npx tsc -p tsconfig-cjs.json && ./fixup"
+  },
+  "files": [
+    "/src"
+  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:CoorpAcademy/serverless-plugins.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CoorpAcademy/serverless-plugins/issues"
+  },
+  "homepage": "https://github.com/CoorpAcademy/serverless-plugins/tree/master/packages/serverless-offline-sqs#readme",
+  "author": "Arthur Weber @godu",
+  "maintainers": [
+    "Arthur Weber @godu",
+    "Adrien Becchis @AdrieanKhisbe"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=14"
+  },
+  "peerDependencies": {
+    "serverless": "^2.60 || 3",
+    "serverless-offline": "^11.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1231.0",
+    "lodash": "^4.17.21",
+    "p-queue": "^6.6.2"
+  },
+  "devDependencies": {
+    "jest": "^29.1.2",
+    "serverless-offline": "^11.0.0",
+    "typescript": "^4.8.4"
+  },
+  "keywords": [
+    "sqs",
+    "elasticmq",
+    "serverless",
+    "serverless-squeue",
+    "serverless-offline",
+    "lambda"
+  ]
+}
