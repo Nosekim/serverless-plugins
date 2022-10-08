@@ -9,12 +9,10 @@ const {
   omitBy,
   pick,
   pipe,
-  toPairs
+  toPairs,
 } = require('lodash/fp');
 
-const debugLog = require('serverless-offline/dist/debugLog').default;
-const {default: serverlessLog, setLog} = require('serverless-offline/dist/serverlessLog');
-const Lambda = require('serverless-offline/dist/lambda').default;
+const Lambda = require('serverless-offline/src/lambda').default;
 
 const SQS = require('./sqs');
 
@@ -28,7 +26,7 @@ const defaultOptions = {
   startingPosition: 'TRIM_HORIZON',
   autoCreate: false,
 
-  accountId: '000000000000'
+  accountId: '000000000000',
 };
 
 const omitUndefined = omitBy(isUndefined);
@@ -44,13 +42,13 @@ class ServerlessOfflineSQS {
     this.cliOptions = cliOptions;
     this.serverless = serverless;
 
-    setLog((...args) => serverless.cli.log(...args));
+    // setLog((...args) => serverless.cli.log(...args));
 
     this.hooks = {
       'offline:start:init': this.start.bind(this),
       'offline:start:ready': this.ready.bind(this),
       'offline:start': this._startWithExplicitEnd.bind(this),
-      'offline:start:end': this.end.bind(this)
+      'offline:start:end': this.end.bind(this),
     };
   }
 
@@ -59,7 +57,7 @@ class ServerlessOfflineSQS {
 
     this._mergeOptions();
 
-    const {sqsEvents, lambdas} = this._getEvents();
+    const { sqsEvents, lambdas } = this._getEvents();
 
     this._createLambda(lambdas);
 
@@ -71,7 +69,9 @@ class ServerlessOfflineSQS {
 
     await Promise.all(eventModules);
 
-    serverlessLog(`Starting Offline SQS: ${this.options.stage}/${this.options.region}.`);
+    console.log(
+      `Starting Offline SQS: ${this.options.stage}/${this.options.region}.`
+    );
   }
 
   async ready() {
@@ -82,11 +82,13 @@ class ServerlessOfflineSQS {
 
   // eslint-disable-next-line class-methods-use-this
   async _listenForTermination() {
-    const command = await new Promise(resolve => {
-      process.on('SIGINT', () => resolve('SIGINT')).on('SIGTERM', () => resolve('SIGTERM'));
+    const command = await new Promise((resolve) => {
+      process
+        .on('SIGINT', () => resolve('SIGINT'))
+        .on('SIGTERM', () => resolve('SIGTERM'));
     });
 
-    serverlessLog(`Got ${command} signal. Offline Halting...`);
+    console.log(`Got ${command} signal. Offline Halting...`);
   }
 
   async _startWithExplicitEnd() {
@@ -100,7 +102,7 @@ class ServerlessOfflineSQS {
       return;
     }
 
-    serverlessLog('Halting offline server');
+    console.log('Halting offline server');
 
     const eventModules = [];
 
@@ -121,7 +123,6 @@ class ServerlessOfflineSQS {
 
   _createLambda(lambdas) {
     this.lambda = new Lambda(this.serverless, this.options);
-
     this.lambda.create(lambdas);
   }
 
@@ -139,47 +140,46 @@ class ServerlessOfflineSQS {
 
   _mergeOptions() {
     const {
-      service: {custom = {}, provider}
+      service: { custom = {}, provider },
     } = this.serverless;
 
     const offlineOptions = custom[OFFLINE_OPTION];
     const customOptions = custom[CUSTOM_OPTION];
 
-    this.options = Object.assign(
-      {},
-      omitUndefined(defaultOptions),
-      omitUndefined(provider),
-      omitUndefined(pick('location', offlineOptions)), // serverless-webpack support
-      omitUndefined(customOptions),
-      omitUndefined(this.cliOptions)
-    );
+    this.options = {
+      ...omitUndefined(defaultOptions),
+      ...omitUndefined(provider),
+      ...omitUndefined(pick('location', offlineOptions)), // serverless-webpack support
+      ...omitUndefined(customOptions),
+      ...omitUndefined(this.cliOptions),
+    };
 
-    debugLog('options:', this.options);
+    // debugLog('options:', this.options);
   }
 
   _getEvents() {
-    const {service} = this.serverless;
+    const { service } = this.serverless;
 
     const lambdas = [];
     const sqsEvents = [];
 
     const functionKeys = service.getAllFunctions();
 
-    functionKeys.forEach(functionKey => {
+    functionKeys.forEach((functionKey) => {
       const functionDefinition = service.getFunction(functionKey);
 
-      lambdas.push({functionKey, functionDefinition});
+      lambdas.push({ functionKey, functionDefinition });
 
       const events = service.getAllEventsInFunction(functionKey) || [];
 
-      events.forEach(event => {
-        const {sqs} = this._resolveFn(event);
+      events.forEach((event) => {
+        const { sqs } = this._resolveFn(event);
 
         if (sqs && functionDefinition.handler) {
           sqsEvents.push({
             functionKey,
             handler: functionDefinition.handler,
-            sqs
+            sqs,
           });
         }
       });
@@ -187,12 +187,15 @@ class ServerlessOfflineSQS {
 
     return {
       sqsEvents,
-      lambdas
+      lambdas,
     };
   }
 
   _resolveFn(obj) {
-    const Resources = get(['service', 'resources', 'Resources'], this.serverless);
+    const Resources = get(
+      ['service', 'resources', 'Resources'],
+      this.serverless
+    );
 
     return pipe(
       toPairs,
@@ -208,10 +211,13 @@ class ServerlessOfflineSQS {
 
               switch (type) {
                 case 'AWS::SQS::Queue': {
-                  const queueName = get([resourceName, 'Properties', 'QueueName'], Resources);
+                  const queueName = get(
+                    [resourceName, 'Properties', 'QueueName'],
+                    Resources
+                  );
                   return [
                     key,
-                    `arn:aws:sqs:${this.options.region}:${this.options.accountId}:${queueName}`
+                    `arn:aws:sqs:${this.options.region}:${this.options.accountId}:${queueName}`,
                   ];
                 }
                 default: {
@@ -232,7 +238,10 @@ class ServerlessOfflineSQS {
   }
 
   _getResources() {
-    const Resources = get(['service', 'resources', 'Resources'], this.serverless);
+    const Resources = get(
+      ['service', 'resources', 'Resources'],
+      this.serverless
+    );
     return this._resolveFn(Resources);
   }
 }

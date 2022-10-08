@@ -1,6 +1,6 @@
-const {isNil, omit} = require('lodash/fp');
+const { isNil, omit } = require('lodash/fp');
 
-const extractQueueNameFromARN = arn => {
+const extractQueueNameFromARN = (arn) => {
   const [, , , , , queueName] = arn.split(':');
   return queueName;
 };
@@ -24,7 +24,10 @@ class SQSEventDefinition {
     this.queueName = queueName;
 
     if (typeof rawSqsEventDefinition !== 'string') {
-      Object.assign(this, omit(['arn', 'queueName', 'enabled'], rawSqsEventDefinition));
+      Object.assign(
+        this,
+        omit(['arn', 'queueName', 'enabled'], rawSqsEventDefinition)
+      );
     }
   }
 }

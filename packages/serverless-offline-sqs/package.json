@@ -1,6 +1,7 @@
 {
-  "name": "serverless-offline-sqs",
-  "version": "7.0.0",
+  "name": "@rogerfelipe/serverless-offline-sqs",
+  "version": "7.0.1",
+  "private": false,
   "description": "Emulate AWS λ and SQS locally when developing your Serverless project",
   "main": "src",
   "repository": {
@@ -27,7 +28,8 @@
     "node": ">=14"
   },
   "peerDependencies": {
-    "serverless-offline": "^11.0.0"
+    "serverless-offline": "^11.0.0",
+    "serverless": "^2.60 || 3"
   },
   "dependencies": {
     "aws-sdk": "^2.1231.0",
