@@ -1,17 +1,19 @@
 {
   "name": "@rogerfelipe/serverless-offline-sqs",
-  "version": "7.0.4",
+  "version": "7.0.5",
   "private": false,
   "description": "Emulate AWS λ and SQS locally when developing your Serverless project",
-  "main": "src/index.js",
-  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel src -d dist"
+  },
   "files": [
-    "/src"
+    "/dist"
   ],
   "exports": {
     ".": {
-      "import": "./src/index.js",
-      "require": "./src/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     }
   },
   "repository": {
@@ -32,8 +34,8 @@
     "node": ">=14"
   },
   "peerDependencies": {
-    "serverless-offline": "^11.0.0",
-    "serverless": "^2.60 || 3"
+    "serverless": "^2.60 || 3",
+    "serverless-offline": "^11.0.0"
   },
   "dependencies": {
     "aws-sdk": "^2.1231.0",
@@ -41,6 +43,8 @@
     "p-queue": "^6.6.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "serverless-offline": "^11.0.0"
   },
   "keywords": [

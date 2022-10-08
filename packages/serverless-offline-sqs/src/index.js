@@ -146,13 +146,14 @@ class ServerlessOfflineSQS {
     const offlineOptions = custom[OFFLINE_OPTION];
     const customOptions = custom[CUSTOM_OPTION];
 
-    this.options = {
-      ...omitUndefined(defaultOptions),
-      ...omitUndefined(provider),
-      ...omitUndefined(pick("location", offlineOptions)), // serverless-webpack support
-      ...omitUndefined(customOptions),
-      ...omitUndefined(this.cliOptions),
-    };
+    this.options = Object.assign(
+      {},
+      omitUndefined(defaultOptions),
+      omitUndefined(provider),
+      omitUndefined(pick("location", offlineOptions)), // serverless-webpack support
+      omitUndefined(customOptions),
+      omitUndefined(this.cliOptions)
+    );
 
     // debugLog('options:', this.options);
   }
