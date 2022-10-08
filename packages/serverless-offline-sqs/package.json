@@ -1,6 +1,6 @@
 {
   "name": "serverless-offline-squeue",
-  "version": "7.0.7",
+  "version": "7.0.8",
   "private": false,
   "description": "Emulate AWS λ and SQS locally when developing your Serverless project",
   "main": "dist/index.cjs",
